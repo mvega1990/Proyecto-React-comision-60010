@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -24,7 +24,7 @@ a:hover {
 
 body {
   margin: 0;
-  /* display: flex; */
+
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -69,4 +69,8 @@ button:focus-visible {
 span {
   color: white;
   padding-left: 0.4rem;
-}
+} */
+ a.nav-link {
+  padding: 12px !important;
+
+ }

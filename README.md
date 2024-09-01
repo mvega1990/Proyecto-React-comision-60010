@@ -1,8 +1,6 @@
-# React + Vite
+Esta aplicacion es un ecommerce de herramientas y maquinas para talleres mecanicos. Tiene una pagina de inicio con  todos los productos y los podes filtrar por categoria. Tambien tiene una pagina con el detalle de cada producto que se puede agregar a un carrito de compra segun el stock.
+Los productos se consumen a una base de datos a travez de firestore y al realizar una compra se llena un formulario y se envia cargandose la orden de compra y guardandola en la base de datos.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Para usar esta aplicacion tenes que usar git clone https://github.com/mvega1990/Proyecto-React-comision-60010.git
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Para iniciarlo tenes que hacer npm install para descargar las dependencias y npm run dev para correrlo.

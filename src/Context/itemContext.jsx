@@ -1,37 +1,88 @@
-import { createContext } from "react";
-import { useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { AuthContext } from "./authContext";
 
-export const ItemContext= createContext()
-export const Provider = ({children}) => {
+const API_URL = import.meta.env.VITE_API_URL;
 
-    const [items, setItems] = useState([])
+export const ItemContext = createContext();
 
-    const addItem = (item) => {
-        const alReadyexist = items.some((i)=> i.id ===item.id)
-        if(alReadyexist){
-            const newItems = items.map(i => {
-                if(i.id===item.id){
-                    return {...i, quantity: i.quantity + item.quantity}
-                }else{
-                    return i
-                }
-            })
-            setItems(newItems)
-        }
-            else{setItems((prev) => [...prev, item])}
-        
+export const Provider = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  const [items, setItems] = useState([]);
+  const [cartId, setCartId] = useState(null);
+
+  // Mapea el carrito tal como lo devuelve el backend
+  // ({ _id, products: [{ product, quantity }] }) al shape plano que ya
+  // usaban los componentes (items: [{ ...producto, quantity }]).
+  const applyCart = (cart) => {
+    setCartId(cart._id);
+    setItems(
+      (cart.products || [])
+        .filter((p) => p.product)
+        .map((p) => ({
+          ...p.product,
+          id: p.product._id,
+          image: p.product.thumbnail,
+          quantity: p.quantity,
+        }))
+    );
+  };
+
+  const fetchCart = () => {
+    if (!user) {
+      setItems([]);
+      setCartId(null);
+      return;
     }
+    fetch(`${API_URL}/api/carts/mine`, { credentials: "include" })
+      .then((res) => res.json())
+      .then((cart) => applyCart(cart))
+      .catch((error) => console.error("Error al traer el carrito: ", error));
+  };
 
-    const reset = () => setItems([])
-    
-    const removeItem = (id) => {
-        const filter = items.filter(i => i.id !== id)
-        setItems (filter)
-    }
-console.log(items)
-    return <ItemContext.Provider value={{addItem, items, reset, removeItem}}>{
-        children
-    }
+  // Cada vez que cambia quién está logueado, recarga el carrito (o lo vacía
+  // si se deslogueó).
+  useEffect(fetchCart, [user]);
 
+  const addItem = async (item) => {
+    const current = items.find((i) => i.id === item.id);
+    const target = (current?.quantity || 0) + item.quantity;
+
+    // POST siempre suma de a 1 (crea el renglón si no existía). El PUT de
+    // después es el que deja la cantidad exacta que eligió el usuario.
+    await fetch(`${API_URL}/api/carts/${cartId}/product/${item.id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+    await fetch(`${API_URL}/api/carts/${cartId}/products/${item.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ quantity: target }),
+    });
+    fetchCart();
+  };
+
+  const removeItem = async (id) => {
+    await fetch(`${API_URL}/api/carts/${cartId}/product/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    fetchCart();
+  };
+
+  const reset = async () => {
+    await fetch(`${API_URL}/api/carts/${cartId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    fetchCart();
+  };
+
+  return (
+    <ItemContext.Provider
+      value={{ addItem, items, reset, removeItem, cartId, refreshCart: fetchCart }}
+    >
+      {children}
     </ItemContext.Provider>
-}
+  );
+};

@@ -1,9 +1,10 @@
 
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { getFirestore, getDoc, doc } from "firebase/firestore";
 import { ItemContext } from "../Context/itemContext";
 import { ItemDetail } from "./ItemDetail"; // Importa el nuevo componente
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const ItemDetailContainer = () => {
   const [item, setItem] = useState({});
@@ -12,13 +13,18 @@ export const ItemDetailContainer = () => {
   const { addItem } = useContext(ItemContext);
 
   useEffect(() => {
-    const db = getFirestore();
-    const refDoc = doc(db, "Items", id);
-
-    getDoc(refDoc)
-      .then((snapshot) => {
-        setItem({ id: snapshot.id, ...snapshot.data() });
+    setLoading(true);
+    fetch(`${API_URL}/api/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setItem({
+          ...data.product,
+          id: data.product._id,
+          image: data.product.thumbnail,
+          marca: data.product.brand,
+        });
       })
+      .catch((error) => console.error("Error al traer el producto: ", error))
       .finally(() => setLoading(false));
   }, [id]);
 

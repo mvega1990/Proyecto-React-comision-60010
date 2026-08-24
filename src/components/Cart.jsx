@@ -1,57 +1,58 @@
 import { useContext, useState } from "react";
+import { CardPayment } from "@mercadopago/sdk-react";
 import { ItemContext } from "../Context/itemContext";
-import { Button, Container, Table, Form } from "react-bootstrap";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { AuthContext } from "../Context/authContext";
+import { Button, Container, Table, Alert } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const initialValue = {
-  name: "",
-  phone: "",
-  email: "",
-};
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const Cart = () => {
-  const [buyer, setBuyer] = useState(initialValue);
-  const { items, reset, removeItem } = useContext(ItemContext);
+  const { items, reset, removeItem, cartId, refreshCart } = useContext(ItemContext);
+  const { user } = useContext(AuthContext);
+  const [result, setResult] = useState(null); // { status, message }
 
   const total = items.reduce((acc, act) => acc + act.price * act.quantity, 0);
 
-  const sendOrder = () => {
-    if (!buyer.name || !buyer.phone || !buyer.email) {
-      alert("Por favor, complete todos los campos antes de comprar.");
-      return;
+  // El Brick tokeniza la tarjeta en el navegador (nunca vemos el número acá)
+  // y nos entrega esto — se lo pasamos tal cual a nuestro backend, que es
+  // quien realmente cobra y recalcula el monto contra la base.
+  const handlePaymentSubmit = async (formData) => {
+    const res = await fetch(`${API_URL}/api/carts/${cartId}/purchase`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        token: formData.token,
+        payment_method_id: formData.payment_method_id,
+        installments: formData.installments,
+        issuer_id: formData.issuer_id,
+      }),
+    });
+    const data = await res.json();
+    const status = data.ticket?.status || "error";
+
+    if (status === "approved") {
+      setResult({ status, message: `¡Compra aprobada! Código de tu pedido: ${data.ticket.code}` });
+      refreshCart();
+    } else if (status === "rejected") {
+      setResult({ status, message: "El pago fue rechazado. Probá con otro medio de pago." });
+    } else {
+      setResult({ status, message: "Tu pago quedó pendiente de confirmación." });
     }
-
-    const order = {
-      buyer,
-      items,
-      total,
-    };
-
-    const db = getFirestore();
-    const orderCollection = collection(db, "orders");
-
-    addDoc(orderCollection, order)
-      .then(({ id }) => {
-        if (id) {
-          alert("Su orden: " + id + " ha sido completada!");
-        }
-      })
-      .finally(() => {
-        reset();
-        setBuyer(initialValue);
-      });
   };
 
-  const handleChange = (event) => {
-    setBuyer((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
-  };
+  if (result?.status === "approved") {
+    return (
+      <Container className="mt-5 col-lg-6 offset-lg-3 text-center">
+        <Alert variant="success">{result.message}</Alert>
+      </Container>
+    );
+  }
 
   if (items.length === 0) {
-    return <h3 className= "volverInicio">Ir al Inicio para seguir comprando</h3>}
+    return <h3 className="volverInicio">Ir al Inicio para seguir comprando</h3>;
+  }
 
   return (
     <Container className="mt-5 col-lg-8 offset-lg-2">
@@ -101,49 +102,20 @@ export const Cart = () => {
           ))}
         </tbody>
       </Table>
-      <Form className="mt-4">
-        <Form.Group>
-          <Form.Label>Nombre</Form.Label>
-          <Form.Control
-            type="text"
-            name="name"
-            value={buyer.name}
-            onChange={handleChange}
-            placeholder="Ingrese su nombre"
-            className="w-50"
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Teléfono</Form.Label>
-          <Form.Control
-            type="text"
-            name="phone"
-            value={buyer.phone}
-            onChange={handleChange}
-            placeholder="Ingrese su teléfono"
-            className="w-50"
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={buyer.email}
-            onChange={handleChange}
-            placeholder="Ingrese su email"
-            className="w-50"
-          />
-        </Form.Group>
-        <Button
-          variant="primary"
-          className="mt-3"
-          type="button"
-          onClick={sendOrder}
-        >
-          Comprar
-        </Button>
-      </Form>
+
+      {result && result.status !== "approved" && (
+        <Alert variant={result.status === "rejected" ? "danger" : "warning"} className="mt-3">
+          {result.message}
+        </Alert>
+      )}
+
+      <div className="mt-4" style={{ maxWidth: "480px" }}>
+        <CardPayment
+          initialization={{ amount: total, payer: { email: user?.email } }}
+          onSubmit={handlePaymentSubmit}
+          onError={(error) => console.error("Error del Brick: ", error)}
+        />
+      </div>
     </Container>
   );
 };

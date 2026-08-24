@@ -10,13 +10,9 @@ export const ItemListContainer = () => {
 
   if (loading) return <h3>Cargando...</h3>;
 
-  const filteredHerramientas = id
-    ? list.filter((herramienta) => herramienta.categoryId === id)
-    : list;
-
   return (
     <Container className="d-flex flex-wrap mt-3 col-lg-10 justify-content-center">
-      <ItemList herramientas={filteredHerramientas} />
+      <ItemList herramientas={list} />
     </Container>
   );
 };

@@ -10,7 +10,7 @@ export const CartWidget = () => {
     return (
         <Link to="/cart" className="link-no-underline">
        
-        <i class="bi bi-cart2" style={{ fontSize: '32px', color: 'white' }}></i>
+       <i className="bi bi-cart2" style={{ fontSize: '32px', color: 'white' }}></i>
 
         <span className = "numerito">{quantity}</span>
         </Link>

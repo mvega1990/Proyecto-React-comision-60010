@@ -1,19 +1,28 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 import { CartWidget } from "./CarWidget";
 import { AuthContext } from "../Context/authContext";
 
 export const NavBar = () => {
   const { user, loadingAuth, logout } = useContext(AuthContext);
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    if (!search.trim()) return;
+    navigate(`/buscar/${encodeURIComponent(search.trim())}`);
   };
 
   return (
@@ -38,7 +47,22 @@ export const NavBar = () => {
           <Nav.Link as={NavLink} to="/categoria/Herramientas para talleres mecánicos">
             Talleres mecánicos
           </Nav.Link>
+          <Nav.Link as={NavLink} to="/marcas">
+            Marcas
+          </Nav.Link>
         </Nav>
+        <Form className="d-flex me-3" onSubmit={handleSearch}>
+          <Form.Control
+            type="search"
+            placeholder="Buscar productos..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ maxWidth: "220px" }}
+          />
+          <Button type="submit" variant="outline-light" className="ms-2">
+            Buscar
+          </Button>
+        </Form>
         {!loadingAuth && (
           user ? (
             <Nav className="align-items-center">

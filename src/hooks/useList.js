@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 // falta tocar Item.jsx / ItemDetail.jsx.
 const mapProduct = (p) => ({ ...p, id: p._id, image: p.thumbnail, marca: p.brand });
 
-export const useList = (category) => {
+export const useList = (category, sort, brand, search) => {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +15,9 @@ export const useList = (category) => {
     setLoading(true);
     const params = new URLSearchParams({ limit: 100 });
     if (category) params.set("category", category);
+    if (sort) params.set("sort", sort); // "asc" | "desc", el backend ya lo soporta
+    if (brand) params.set("brand", brand);
+    if (search) params.set("search", search);
 
     fetch(`${API_URL}/api/products?${params.toString()}`)
       .then((res) => res.json())
@@ -26,7 +29,7 @@ export const useList = (category) => {
         setList([]);
       })
       .finally(() => setLoading(false));
-  }, [category]);
+  }, [category, sort, brand, search]);
 
   return { list, loading };
 };

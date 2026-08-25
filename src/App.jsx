@@ -7,6 +7,7 @@ import { AuthProvider } from "./Context/authContext";
 import { Cart } from "./components/Cart";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
+import { Marcas } from "./components/Marcas";
 
 function App() {
   return (
@@ -18,6 +19,9 @@ function App() {
             <Route path="/" element={<ItemListContainer />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/categoria/:id" element={<ItemListContainer />} />
+            <Route path="/marcas" element={<Marcas />} />
+            <Route path="/marca/:brand" element={<ItemListContainer />} />
+            <Route path="/buscar/:query" element={<ItemListContainer />} />
             <Route path="/item/:id" element={<ItemDetailContainer />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

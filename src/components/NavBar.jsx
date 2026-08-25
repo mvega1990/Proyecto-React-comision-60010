@@ -35,6 +35,9 @@ export const NavBar = () => {
           <Nav.Link as={NavLink} to="/categoria/Muebleria y equipamiento">
             Muebleria y equipamiento
           </Nav.Link>
+          <Nav.Link as={NavLink} to="/categoria/Herramientas para talleres mecánicos">
+            Talleres mecánicos
+          </Nav.Link>
         </Nav>
         {!loadingAuth && (
           user ? (

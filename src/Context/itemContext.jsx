@@ -44,21 +44,32 @@ export const Provider = ({ children }) => {
   useEffect(fetchCart, [user]);
 
   const addItem = async (item) => {
+    if (!cartId) {
+      alert("No se pudo identificar tu carrito. Volvé a iniciar sesión e intentá de nuevo.");
+      return;
+    }
     const current = items.find((i) => i.id === item.id);
     const target = (current?.quantity || 0) + item.quantity;
 
     // POST siempre suma de a 1 (crea el renglón si no existía). El PUT de
     // después es el que deja la cantidad exacta que eligió el usuario.
-    await fetch(`${API_URL}/api/carts/${cartId}/product/${item.id}`, {
+    const addRes = await fetch(`${API_URL}/api/carts/${cartId}/product/${item.id}`, {
       method: "POST",
       credentials: "include",
     });
-    await fetch(`${API_URL}/api/carts/${cartId}/products/${item.id}`, {
+    if (!addRes.ok) {
+      alert("No se pudo agregar el producto al carrito. Probá de nuevo.");
+      return;
+    }
+    const putRes = await fetch(`${API_URL}/api/carts/${cartId}/products/${item.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({ quantity: target }),
     });
+    if (!putRes.ok) {
+      alert("No se pudo ajustar la cantidad. Probá de nuevo.");
+    }
     fetchCart();
   };
 

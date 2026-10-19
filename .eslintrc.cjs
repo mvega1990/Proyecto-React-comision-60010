@@ -13,6 +13,9 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'react/jsx-no-target-blank': 'off',
+    // El proyecto nunca declaró PropTypes en ningún componente — esta regla
+    // tiraba 100+ falsos positivos en todos lados y tapaba problemas reales.
+    'react/prop-types': 'off',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },

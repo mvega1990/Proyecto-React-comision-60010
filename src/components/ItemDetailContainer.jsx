@@ -2,7 +2,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ItemContext } from "../Context/itemContext";
-import { AuthContext } from "../Context/authContext";
 import { ItemDetail } from "./ItemDetail"; // Importa el nuevo componente
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -12,7 +11,6 @@ export const ItemDetailContainer = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { addItem } = useContext(ItemContext);
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,13 +29,9 @@ export const ItemDetailContainer = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const onAdd = (quantity) => {
-    if (!user) {
-      alert("Iniciá sesión para agregar productos al carrito");
-      navigate("/login");
-      return;
-    }
-    addItem({ ...item, quantity });
+  const onAdd = async (quantity) => {
+    await addItem({ ...item, quantity });
+    navigate("/cart");
   };
 
   return loading ? (

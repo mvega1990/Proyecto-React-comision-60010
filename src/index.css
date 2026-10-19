@@ -1,5 +1,167 @@
+:root {
+  --bg: #0b0b10;
+  --bg-alt: #101018;
+  --bg-black: #000000;
+  --card-bg: #15151f;
+  --card-bg-alt: #1d1d28;
+  --border: #24243040;
+  --text: #e7e7ef;
+  --text-dim: #8a8aa0;
+  --text-faint: #6e6e82;
+  --accent: #4f46e5;
+  --accent-2: #22d3ee;
+  --accent-3: #7c3aed;
+  --stock-ok: #34d399;
+  --stock-low: #f5a623;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, .display {
+  font-family: var(--font-display);
+}
+
 a.nav-link {
   padding: 12px !important;
+}
+
+.nav-link-custom {
+  color: var(--text) !important;
+}
+.nav-link-custom.active,
+.nav-link-custom:hover {
+  color: var(--accent-2) !important;
+}
+
+.btn-brand {
+  background: var(--accent) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.btn-brand:hover {
+  filter: brightness(1.12);
+}
+
+.sidebar-list .list-group-item {
+  background-color: var(--card-bg);
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+.sidebar-list .list-group-item.active {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.sidebar-list .list-group-item:hover:not(.active) {
+  background-color: var(--card-bg-alt);
+  color: var(--text);
+}
+
+.search-input-dark::placeholder {
+  color: var(--text-dim);
+  opacity: 1;
+}
+
+.promo-bar {
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+}
+/* 4 mensajes, 3s cada uno = ciclo total de 12s. Los keyframes están escritos
+   como fracción de UN SOLO turno (3s), no del ciclo completo — por eso cada
+   slide queda invisible el resto del tiempo (los % de más de 25% siguen en
+   opacity:0) en vez de solaparse con el que le sigue. Si el día de mañana se
+   agrega o saca un mensaje: duration = alto de mensajes * 3s, delay de cada
+   uno = su posición * 3s, y estos % de acá abajo no cambian (siguen siendo
+   relativos a "un turno de 3s"), pero si el turno deja de ser 3s hay que
+   recalcularlos a mano. */
+.promo-bar-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  animation: promo-fade 12s infinite;
+}
+.promo-bar-slide:nth-child(2) {
+  animation-delay: 3s;
+}
+.promo-bar-slide:nth-child(3) {
+  animation-delay: 6s;
+}
+.promo-bar-slide:nth-child(4) {
+  animation-delay: 9s;
+}
+@keyframes promo-fade {
+  0% { opacity: 0; transform: translateY(6px); }
+  4% { opacity: 1; transform: translateY(0); }
+  20% { opacity: 1; transform: translateY(0); }
+  25% { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 0; }
+}
+
+.h-scroll-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 4px 4px 14px;
+  scroll-snap-type: x proximity;
+}
+.h-scroll-row > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+.h-scroll-row::-webkit-scrollbar {
+  height: 8px;
+}
+.h-scroll-row::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.hero-slide {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.hero-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Tira de marcas: se mueve sola en loop infinito (no depende de hover, así
+   también anda en celular). El truco es duplicar el contenido una vez y
+   animar solo la mitad del ancho: cuando termina, la copia ya quedó calzada
+   en el mismo lugar y no se nota el reinicio. Se pausa al pasar el mouse
+   para poder cliquear una marca sin que se mueva debajo tuyo. */
+.brands-marquee-viewport {
+  overflow: hidden;
+  padding: 4px 0 14px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+.brands-marquee-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: brands-marquee-scroll 35s linear infinite;
+}
+.brands-marquee-viewport:hover .brands-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes brands-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .numerito {
@@ -22,4 +184,117 @@ a.nav-link {
 }
 .volverInicio{
   margin: 20px;
+}
+
+/* Grilla de categorías del Home y de /categorias: tarjeta con foto + etiqueta
+   pegada abajo a la izquierda. Fondo blanco parejo (no oscuro detrás de la
+   foto, que ya viene con fondo blanco) y toda la tarjeta crece junta al pasar
+   el mouse, no solo la imagen (mismo mecanismo que matiasherramientas.com.ar,
+   con nuestros colores). */
+.category-tile {
+  display: block;
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+.category-tile:hover {
+  transform: scale(1.035) translateY(-4px);
+  box-shadow: 0 14px 30px -10px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+.category-tile-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  padding: 18px;
+}
+.category-tile-label {
+  position: absolute;
+  left: 0;
+  bottom: 18px;
+  background: linear-gradient(90deg, var(--accent-3), var(--accent-2));
+  color: #0b0b10;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 8px 16px;
+  border-radius: 0 100px 100px 0;
+  transition: filter 0.2s ease-out;
+}
+.category-tile:hover .category-tile-label {
+  filter: brightness(1.1);
+}
+
+.category-tile-more {
+  background: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  aspect-ratio: 1 / 1;
+}
+.category-tile-more-plus {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(90deg, var(--accent-3), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.category-tile-more .category-tile-label {
+  position: static;
+  border-radius: 100px;
+}
+
+/* Dropdown de sugerencias mientras se escribe en el buscador del header
+   (mismo patrón que matiasherramientas.com.ar). */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 14px 30px -8px rgba(0,0,0,0.5);
+  overflow: hidden;
+  z-index: 50;
+}
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+.search-suggestion-item:last-child {
+  border-bottom: none;
+}
+.search-suggestion-item:hover {
+  background: var(--card-bg-alt);
+}
+.search-suggestion-item img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.search-suggestion-title {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.3;
+}
+.search-suggestion-brand {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 2px;
 }

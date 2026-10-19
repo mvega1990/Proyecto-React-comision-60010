@@ -27,21 +27,36 @@ export const Provider = ({ children }) => {
     );
   };
 
-  const fetchCart = () => {
-    if (!user) {
-      setItems([]);
-      setCartId(null);
-      return;
+  // No hace falta estar logueado para tener carrito: si no hay ninguna
+  // cookie válida todavía (primera visita, o te deslogueaste), le pedimos
+  // uno de invitado al backend y reintentamos. Si hay sesión de verdad,
+  // /api/carts/mine ya devuelve el carrito real de la cuenta.
+  const fetchCart = async () => {
+    try {
+      let res = await fetch(`${API_URL}/api/carts/mine`, { credentials: "include" });
+      if (res.status === 401) {
+        const guestRes = await fetch(`${API_URL}/api/session/guest`, {
+          method: "POST",
+          credentials: "include",
+        });
+        if (!guestRes.ok) throw new Error("No se pudo iniciar el carrito");
+        res = await fetch(`${API_URL}/api/carts/mine`, { credentials: "include" });
+      }
+      if (!res.ok) throw new Error("No se pudo traer el carrito");
+      applyCart(await res.json());
+    } catch (error) {
+      console.error("Error al traer el carrito: ", error);
     }
-    fetch(`${API_URL}/api/carts/mine`, { credentials: "include" })
-      .then((res) => res.json())
-      .then((cart) => applyCart(cart))
-      .catch((error) => console.error("Error al traer el carrito: ", error));
   };
 
-  // Cada vez que cambia quién está logueado, recarga el carrito (o lo vacía
-  // si se deslogueó).
-  useEffect(fetchCart, [user]);
+  // Cada vez que cambia quién está logueado, recarga el carrito (fetchCart
+  // es async, así que no puede pasarse directo como efecto: React espera que
+  // el efecto en sí sea sincrónico y devuelva, como mucho, una función de
+  // limpieza).
+  useEffect(() => {
+    fetchCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const addItem = async (item) => {
     if (!cartId) {
@@ -70,7 +85,26 @@ export const Provider = ({ children }) => {
     if (!putRes.ok) {
       alert("No se pudo ajustar la cantidad. Probá de nuevo.");
     }
-    fetchCart();
+    await fetchCart();
+  };
+
+  // Deja la cantidad de un renglón ya existente en un valor exacto (los +/-
+  // del carrito). Optimista: actualiza el estado local ya mismo para que el
+  // stepper responda al toque, y sincroniza con fetchCart al final por si el
+  // backend recortó la cantidad (ej. no había más stock).
+  const updateQuantity = async (id, quantity) => {
+    if (quantity < 1) return;
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, quantity } : i)));
+    const res = await fetch(`${API_URL}/api/carts/${cartId}/products/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ quantity }),
+    });
+    if (!res.ok) {
+      alert("No se pudo ajustar la cantidad. Probá de nuevo.");
+    }
+    await fetchCart();
   };
 
   const removeItem = async (id) => {
@@ -91,7 +125,7 @@ export const Provider = ({ children }) => {
 
   return (
     <ItemContext.Provider
-      value={{ addItem, items, reset, removeItem, cartId, refreshCart: fetchCart }}
+      value={{ addItem, items, reset, removeItem, updateQuantity, cartId, refreshCart: fetchCart }}
     >
       {children}
     </ItemContext.Provider>

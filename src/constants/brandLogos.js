@@ -23,4 +23,5 @@ export const BRAND_LOGOS = {
   "Autel": "https://res.cloudinary.com/l7bggfei/image/upload/v1788441854/ba-herramientas/marcas/sjg5cjrdzlkmi60iilzi.png",
   "Thinkcar": "https://res.cloudinary.com/l7bggfei/image/upload/v1788441855/ba-herramientas/marcas/grwhstyec6z5dka0x0qz.png",
   "Total": "https://res.cloudinary.com/l7bggfei/image/upload/v1788441856/ba-herramientas/marcas/xa16skax2fhydh1wwyzu.png",
+  "Palladino": "https://res.cloudinary.com/l7bggfei/image/upload/v1792439984/ba-herramientas/marcas/b9nwmej3xyulou6pddoi.png",
 };

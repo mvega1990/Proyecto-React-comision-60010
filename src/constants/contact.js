@@ -24,9 +24,9 @@ export const UBICACIONES = [
   {
     key: "showroom",
     nombre: "Showroom (previa cita)",
-    direccion: "Díaz Vélez 1666, Ramos Mejía",
+    direccion: "Av. Díaz Vélez 1333, Ramos Mejía",
     horario: "Lunes a viernes: 10 a 17 hs",
-    mapsQuery: "Díaz Vélez 1666, Ramos Mejía, Buenos Aires",
+    mapsQuery: "Av. Díaz Vélez 1333, Ramos Mejía, Buenos Aires",
   },
   {
     key: "deposito",

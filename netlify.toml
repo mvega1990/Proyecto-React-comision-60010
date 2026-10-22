@@ -1,0 +1,10 @@
+# Es una Single Page Application (React Router maneja las rutas en el
+# navegador, no hay un archivo real en el server para cada una). Sin esta
+# regla, entrar directo a una URL como /productos o refrescar la página en
+# ella da "Page not found" porque Netlify busca un archivo que no existe -
+# esto le dice que sirva siempre index.html y deje que React Router decida
+# qué mostrar.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

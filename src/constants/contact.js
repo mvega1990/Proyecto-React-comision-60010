@@ -1,11 +1,10 @@
-// TODO: completar con los datos bancarios reales antes de salir al público.
 // Esto se muestra tal cual en el checkout cuando alguien elige "Transferencia".
 export const BANK_DETAILS = {
-  alias: "PENDIENTE.COMPLETAR",
-  cbu: "0000000000000000000000",
-  cuit: "00-00000000-0",
-  titular: "COMPLETAR TITULAR",
-  banco: "COMPLETAR BANCO",
+  alias: "ANDREA-BAEZ89",
+  cbu: "0720000788000037282936",
+  cuit: "27-34584656-0",
+  titular: "Andrea Pamela Sabrina Baez",
+  banco: "Banco Santander",
 };
 
 export const WHATSAPP_NUMBER = "5491171002357";

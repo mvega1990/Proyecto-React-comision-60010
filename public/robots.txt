@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://baherramientas.com.ar/sitemap.xml

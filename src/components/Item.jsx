@@ -10,8 +10,8 @@ const FREE_SHIPPING_CATEGORIES = ["Scanners", "Equipos electrónica"];
 
 export const Item = ({ herramienta }) => {
   const stock = herramienta.stock ?? 0;
-  const stockLabel = stock <= 0 ? "SIN STOCK" : stock <= 4 ? "ÚLTIMAS UNIDADES" : "CON STOCK";
-  const stockColor = stock <= 0 ? "var(--text-faint)" : stock <= 4 ? "var(--stock-low)" : "var(--stock-ok)";
+  const stockLabel = stock <= 0 ? "SIN STOCK" : stock === 1 ? "ÚLTIMAS UNIDADES" : "CON STOCK";
+  const stockColor = stock <= 0 ? "var(--text-faint)" : stock === 1 ? "var(--stock-low)" : "var(--stock-ok)";
   const hasFreeShipping = FREE_SHIPPING_CATEGORIES.includes(herramienta.category);
 
   return (

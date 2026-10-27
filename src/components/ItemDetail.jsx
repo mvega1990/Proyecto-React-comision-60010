@@ -117,9 +117,9 @@ export const ItemDetail = ({ item, onAdd }) => {
   const shownImage = gallery.includes(activeImage) ? activeImage : item.image;
 
   const stock = item.stock ?? 0;
-  const stockLabel = stock <= 0 ? "SIN STOCK" : stock <= 4 ? "ÚLTIMAS UNIDADES" : "CON STOCK";
-  const stockColor = stock <= 0 ? "var(--text-faint)" : stock <= 4 ? "var(--stock-low)" : "var(--stock-ok)";
-  const stockTint = stock <= 0 ? "rgba(110,110,130,0.14)" : stock <= 4 ? "rgba(245,166,35,0.14)" : "rgba(52,211,153,0.14)";
+  const stockLabel = stock <= 0 ? "SIN STOCK" : stock === 1 ? "ÚLTIMAS UNIDADES" : "CON STOCK";
+  const stockColor = stock <= 0 ? "var(--text-faint)" : stock === 1 ? "var(--stock-low)" : "var(--stock-ok)";
+  const stockTint = stock <= 0 ? "rgba(110,110,130,0.14)" : stock === 1 ? "rgba(245,166,35,0.14)" : "rgba(52,211,153,0.14)";
 
   const whatsappMessage = `Hola! Quería consultar por "${item.title}"${item.code ? ` (código ${item.code})` : ""}.`;
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;

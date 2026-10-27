@@ -521,7 +521,11 @@ const BrandsStrip = () => {
 export const Home = () => {
   const { list: scanners, loading: loadingScanners } = useList("Scanners", null, null, null, { limit: 12 });
   const { list: destacados, loading: loadingDestacados } = useList(null, null, null, null, { featured: true, limit: 12 });
-  const { list: novedades, loading: loadingNovedades } = useList(null, "newest", null, null, { limit: 12 });
+  // Elegidas a mano por el dueño (campo newArrival), no automático por fecha de
+  // carga - mientras se termina de migrar el catálogo viejo, "recién
+  // cargado" no es lo mismo que "es una novedad real". El sort=newest
+  // genérico sigue existiendo en /productos para quien quiera ordenar así.
+  const { list: novedades, loading: loadingNovedades } = useList(null, null, null, null, { newArrival: true, limit: 12 });
   const { list: ofertasSocios, loading: loadingOfertasSocios, user } = useMemberOffers();
 
   return (
@@ -533,7 +537,7 @@ export const Home = () => {
       {user && (
         <ProductRow title="Ofertas para socios" list={ofertasSocios} loading={loadingOfertasSocios} emptyOk />
       )}
-      <ProductRow title="Novedades" list={novedades} loading={loadingNovedades} to="/productos?sort=newest" />
+      <ProductRow title="Novedades" list={novedades} loading={loadingNovedades} emptyOk />
       <BrandsStrip />
     </div>
   );

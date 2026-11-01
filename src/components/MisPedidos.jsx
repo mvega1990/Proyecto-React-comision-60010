@@ -12,7 +12,7 @@ const ESTADOS = {
   rejected: { texto: "Rechazado", color: "#f56565", bg: "rgba(245, 101, 101, 0.12)" },
 };
 
-const PUNTOS_RETIRO = { showroom: "Showroom", deposito: "Depósito" };
+const PUNTOS_RETIRO = { showroom: "Depósito Ramos Mejía", deposito: "Depósito Ciudadela" };
 
 const describirEnvio = (shipping) => {
   if (!shipping) return "No especificada";

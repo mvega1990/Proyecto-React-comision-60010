@@ -17,7 +17,7 @@ const METODOS_PAGO = {
   transferencia: "Transferencia",
 };
 
-const PUNTOS_RETIRO = { showroom: "Showroom", deposito: "Depósito" };
+const PUNTOS_RETIRO = { showroom: "Depósito Ramos Mejía", deposito: "Depósito Ciudadela" };
 
 const describirEnvio = (shipping) => {
   if (!shipping) return "No especificada";

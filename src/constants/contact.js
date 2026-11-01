@@ -15,21 +15,24 @@ export const EMAIL = "ventasbaherramientas@gmail.com";
 export const ZONA = "Ramos Mejía y Ciudadela, Buenos Aires";
 export const HORARIOS = ["Lunes a viernes: 9 a 19 hs", "Sábados: 9 a 16 hs"];
 
-// Dos direcciones reales, con función distinta: el showroom es para ver
-// mercadería (con cita previa) y el depósito es SOLO para retiro/entrega,
-// no atiende al público. Usado en la página Nosotros/Contacto (mapa +
-// horario por ubicación).
+// Dos direcciones reales, con función distinta: el depósito de Ramos Mejía
+// es para ver mercadería (con cita previa) y el de Ciudadela es SOLO para
+// retiro/entrega, no atiende al público. Usado en la página Nosotros/Contacto
+// (mapa + horario por ubicación) y, con `nombreCorto` (sin la aclaración
+// entre paréntesis), en el selector de retiro del carrito.
 export const UBICACIONES = [
   {
     key: "showroom",
-    nombre: "Showroom (previa cita)",
+    nombre: "Depósito Ramos Mejía (previa cita)",
+    nombreCorto: "Depósito Ramos Mejía",
     direccion: "Av. Díaz Vélez 1333, Ramos Mejía",
     horario: "Lunes a viernes: 10 a 17 hs",
     mapsQuery: "Av. Díaz Vélez 1333, Ramos Mejía, Buenos Aires",
   },
   {
     key: "deposito",
-    nombre: "Depósito (solo entrega de mercadería)",
+    nombre: "Depósito Ciudadela (solo entrega de mercadería)",
+    nombreCorto: "Depósito Ciudadela",
     direccion: "Alianza 783, depto. 3, Ciudadela Sur",
     horario: "Lunes a viernes: 9 a 18 hs",
     mapsQuery: "Alianza 783, Ciudadela, Buenos Aires",

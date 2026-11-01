@@ -540,7 +540,7 @@ export const Cart = () => {
                   <label key={u.key} style={shippingCardStyle(pickupLocation === u.key)}>
                     <Form.Check type="radio" name="pickupLocation" checked={pickupLocation === u.key} onChange={() => setPickupLocation(u.key)} />
                     <div style={{ fontSize: "12px" }}>
-                      <div style={{ fontWeight: 600 }}>{u.nombre}</div>
+                      <div style={{ fontWeight: 600 }}>{u.nombreCorto}</div>
                       <div style={{ color: "var(--text-dim)" }}>{u.direccion} · {u.horario}</div>
                     </div>
                   </label>

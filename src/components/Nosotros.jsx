@@ -11,7 +11,7 @@ const METODOS_ENVIO = [
     icon: <CartIcon size={20} />,
     titulo: "Retiro sin cargo",
     texto:
-      "En nuestro showroom de Ramos Mejía (con cita previa) o en el depósito de Ciudadela, coordinando día y horario. Ideal si estás cerca o preferís ver la herramienta antes de retirarla.",
+      "En nuestro depósito de Ramos Mejía (con cita previa) o en el depósito de Ciudadela, coordinando día y horario. Ideal si estás cerca o preferís ver la herramienta antes de retirarla.",
     color: "#7c3aed",
     bg: "rgba(124, 58, 237, 0.15)",
   },
@@ -112,7 +112,7 @@ export const Nosotros = () => {
           reales de quienes trabajan todos los días con estas herramientas.
         </p>
         <p>
-          Tenemos un showroom en Ramos Mejía para ver mercadería en persona (con cita previa), y
+          Tenemos un depósito en Ramos Mejía para ver mercadería en persona (con cita previa), y
           un depósito en Ciudadela Sur para retiro y entrega de pedidos. Atendemos consultas por
           WhatsApp, email o Instagram.
         </p>

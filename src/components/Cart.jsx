@@ -10,6 +10,13 @@ import { WHATSAPP_NUMBER, UBICACIONES, BANK_DETAILS } from "../constants/contact
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Mismo criterio que el backend (carts.service.js: CATEGORIAS_ENVIO_GRATIS /
+// UMBRAL_ENVIO_GRATIS) - acá es solo para mostrarlo apenas se arma el
+// carrito, sin esperar a que el cliente llegue al paso 2/3. El backend es
+// quien lo vuelve a calcular y cobra de verdad, esto es puramente visual.
+const CATEGORIAS_ENVIO_GRATIS = ["Scanners", "Equipos electrónica"];
+const UMBRAL_ENVIO_GRATIS = 300000;
+
 const EMPTY_BUYER = {
   name: "",
   phone: "",
@@ -153,6 +160,10 @@ export const Cart = () => {
   const buyerComplete = envioCompleto && paymentMethod;
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const envioGratisElegible =
+    items
+      .filter((item) => CATEGORIAS_ENVIO_GRATIS.includes(item.category))
+      .reduce((acc, item) => acc + item.price * item.quantity, 0) > UMBRAL_ENVIO_GRATIS;
   // Ahorro estimado pagando en efectivo/transferencia: respeta el offerDiscount
   // propio de cada producto si lo tiene, y el 30% de siempre si no. Es sobre
   // productos únicamente, el envío no tiene descuento.
@@ -310,7 +321,7 @@ export const Cart = () => {
       <div className="d-flex justify-content-between" style={{ fontSize: "13px", color: "var(--text-dim)", marginTop: "6px" }}>
         <span>Envío</span>
         <span style={{ color: "var(--text)" }}>
-          {!shippingMethod && "A elegir"}
+          {!shippingMethod && (envioGratisElegible ? "Gratis" : "A elegir")}
           {(shippingMethod === "retiro" || shippingMethod === "convenir") && "Gratis"}
           {shippingMethod === "domicilio" &&
             (shippingEstimateLoading
@@ -540,8 +551,13 @@ export const Cart = () => {
               <Form.Check type="radio" name="shippingMethod" checked={shippingMethod === "domicilio"} onChange={() => setShippingMethod("domicilio")} />
               <div className="flex-grow-1">
                 <div style={{ fontSize: "13px", fontWeight: 600 }}>Envío a domicilio</div>
-                <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>Costo calculado según tu código postal</div>
+                <div style={{ fontSize: "11px", color: "var(--text-dim)" }}>
+                  {envioGratisElegible ? "Envío gratis por tu compra" : "Costo calculado según tu código postal"}
+                </div>
               </div>
+              {envioGratisElegible && (
+                <span style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--accent-2)" }}>Gratis</span>
+              )}
             </label>
 
             {shippingMethod === "domicilio" && (

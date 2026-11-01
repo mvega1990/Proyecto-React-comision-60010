@@ -27,13 +27,44 @@ body {
   overflow-x: hidden;
 }
 
+.navbar-top-row {
+  position: relative;
+}
+
 @media (max-width: 575.98px) {
   .navbar-top-row {
     padding: 10px 16px !important;
     gap: 12px !important;
   }
+  /* El desplegable de sugerencias (.search-suggestions) es "left:0;
+     right:0" relativo al contenedor posicionado más cercano. Sin esto,
+     ese contenedor es el buscador mismo - que en mobile mide ~85px -, y
+     el desplegable queda igual de angosto, con el texto de cada
+     sugerencia cortado feo. Sacando el position:relative de acá, el
+     contenedor posicionado pasa a ser .navbar-top-row (ver arriba), y el
+     desplegable ocupa el ancho completo de la barra en vez del buscador
+     solo. */
+  .navbar-search-wrap {
+    position: static !important;
+  }
+  .navbar-logo-link svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .navbar-logo-text {
+    font-size: 14px !important;
+  }
   .hero-shipping-badge {
     display: none !important;
+  }
+}
+
+/* Debajo de 360px (algunos celulares de gama baja) ni el texto achicado
+   deja lugar suficiente - directamente se esconde "HERRAMIENTAS" y queda
+   el ícono + "BA", sigue siendo reconocible como marca. */
+@media (max-width: 359.98px) {
+  .navbar-logo-text {
+    display: none;
   }
 }
 

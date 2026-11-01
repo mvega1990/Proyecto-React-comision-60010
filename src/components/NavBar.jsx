@@ -119,9 +119,13 @@ export const NavBar = () => {
           padding: "14px 24px",
         }}
       >
-        <NavLink to="/" className="d-flex align-items-center gap-2" style={{ textDecoration: "none", flexShrink: 0 }}>
+        {/* navbar-logo-link/-text: en mobile el logo completo (ícono + "BA
+            HERRAMIENTAS") llegaba a ocupar 206px de los 375px de pantalla -
+            más de la mitad -, sin dejarle casi nada al buscador. Se achica
+            por CSS en index.css (@media), no hace falta JS para esto. */}
+        <NavLink to="/" className="d-flex align-items-center gap-2 navbar-logo-link" style={{ textDecoration: "none", flexShrink: 0 }}>
           <Logo size={40} />
-          <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "18px", color: "var(--text)" }}>
+          <span className="navbar-logo-text" style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "18px", color: "var(--text)" }}>
             BA <span style={{ color: "var(--accent-2)" }}>HERRAMIENTAS</span>
           </span>
         </NavLink>
@@ -130,7 +134,7 @@ export const NavBar = () => {
             más chico que su contenido por default, aunque tenga flex-grow-1 -
             sin esto, el buscador empujaba a toda la barra (y por lo tanto a
             toda la página) más ancha que la pantalla en mobile. */}
-        <div ref={searchBoxRef} className="d-flex flex-grow-1" style={{ position: "relative", minWidth: 0 }}>
+        <div ref={searchBoxRef} className="d-flex flex-grow-1 navbar-search-wrap" style={{ position: "relative", minWidth: 0 }}>
           <Form className="d-flex flex-grow-1" style={{ minWidth: 0 }} onSubmit={handleSearch}>
             <Form.Control
               type="search"

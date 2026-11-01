@@ -192,9 +192,14 @@ const HeroCarousel = () => {
           )}
 
           {/* Badge simple (string): flota a la derecha de la foto, como en la
-              slide de 30% OFF, que no tiene bloque de texto compitiendo ahí. */}
+              slide de 30% OFF, que no tiene bloque de texto compitiendo ahí.
+              Se esconde en mobile (.hero-shipping-badge, ver index.css): a
+              "right: 48px" fijo, en una pantalla angosta termina encima del
+              texto en vez de al lado - la misma info ya se repite en la
+              franja de promo de arriba, no se pierde nada ocultándolo acá. */}
           {slide.shippingBadge && typeof slide.shippingBadge === "string" && (
             <div
+              className="hero-shipping-badge"
               style={{
                 position: "absolute",
                 right: "48px",

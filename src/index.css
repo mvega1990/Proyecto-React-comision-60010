@@ -21,6 +21,20 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
+  /* Red de seguridad: si algún elemento se pasa de ancho en mobile (pasó
+     con el navbar, puede volver a pasar), esto evita que arrastre a toda
+     la página a un scroll horizontal que corta contenido por el costado. */
+  overflow-x: hidden;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-top-row {
+    padding: 10px 16px !important;
+    gap: 12px !important;
+  }
+  .hero-shipping-badge {
+    display: none !important;
+  }
 }
 
 h1, h2, h3, h4, h5, .display {

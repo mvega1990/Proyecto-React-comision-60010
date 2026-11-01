@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import { CartWidget } from "./CarWidget";
 import { AuthContext } from "../Context/authContext";
 import { Logo } from "./Logo";
+import { MenuIcon, CloseIcon } from "./icons";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,8 +15,13 @@ export const NavBar = () => {
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const searchBoxRef = useRef(null);
   const navigate = useNavigate();
+
+  // Cierra el menú mobile solo al cambiar de pantalla (no al abrir/cerrar
+  // sesión desde ahí mismo, eso lo maneja handleLogout).
+  const closeMenu = () => setMenuOpen(false);
 
   // Sugerencias mientras se escribe (estilo matiasherramientas.com.ar):
   // debounce corto para no pegarle una request al backend por cada tecla.
@@ -47,6 +53,7 @@ export const NavBar = () => {
 
   const handleLogout = async () => {
     await logout();
+    closeMenu();
     navigate("/");
   };
 
@@ -102,6 +109,7 @@ export const NavBar = () => {
 
       {/* Franja logo + buscador + ingresar/carrito */}
       <div
+        className="navbar-top-row"
         style={{
           backgroundColor: "var(--bg-alt)",
           borderBottom: "1px solid var(--border)",
@@ -111,15 +119,19 @@ export const NavBar = () => {
           padding: "14px 24px",
         }}
       >
-        <NavLink to="/" className="d-flex align-items-center gap-2" style={{ textDecoration: "none" }}>
+        <NavLink to="/" className="d-flex align-items-center gap-2" style={{ textDecoration: "none", flexShrink: 0 }}>
           <Logo size={40} />
           <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "18px", color: "var(--text)" }}>
             BA <span style={{ color: "var(--accent-2)" }}>HERRAMIENTAS</span>
           </span>
         </NavLink>
 
-        <div ref={searchBoxRef} className="d-flex flex-grow-1" style={{ position: "relative" }}>
-          <Form className="d-flex flex-grow-1" onSubmit={handleSearch}>
+        {/* minWidth:0 es necesario en los 2 niveles: un hijo flex no se achica
+            más chico que su contenido por default, aunque tenga flex-grow-1 -
+            sin esto, el buscador empujaba a toda la barra (y por lo tanto a
+            toda la página) más ancha que la pantalla en mobile. */}
+        <div ref={searchBoxRef} className="d-flex flex-grow-1" style={{ position: "relative", minWidth: 0 }}>
+          <Form className="d-flex flex-grow-1" style={{ minWidth: 0 }} onSubmit={handleSearch}>
             <Form.Control
               type="search"
               placeholder="¿Qué herramienta estás buscando?"
@@ -128,9 +140,9 @@ export const NavBar = () => {
               onFocus={() => setShowSuggestions(true)}
               autoComplete="off"
               className="search-input-dark"
-              style={{ backgroundColor: "#1A1A24", borderColor: "var(--border)", color: "var(--text)" }}
+              style={{ backgroundColor: "#1A1A24", borderColor: "var(--border)", color: "var(--text)", minWidth: 0 }}
             />
-            <Button type="submit" className="btn-brand ms-2">
+            <Button type="submit" className="btn-brand ms-2 d-none d-sm-inline-block">
               Buscar
             </Button>
           </Form>
@@ -152,7 +164,7 @@ export const NavBar = () => {
 
         {!loadingAuth && (
           user ? (
-            <div className="d-flex align-items-center gap-3" style={{ flexShrink: 0 }}>
+            <div className="d-none d-md-flex align-items-center gap-3" style={{ flexShrink: 0 }}>
               <NavLink to="/mi-cuenta" className="nav-link-custom" style={{ textDecoration: "none", whiteSpace: "nowrap" }}>
                 Mi cuenta
               </NavLink>
@@ -174,7 +186,7 @@ export const NavBar = () => {
               </span>
             </div>
           ) : (
-            <div className="d-flex align-items-center gap-3" style={{ flexShrink: 0 }}>
+            <div className="d-none d-md-flex align-items-center gap-3" style={{ flexShrink: 0 }}>
               <NavLink to="/login" className="nav-link-custom" style={{ textDecoration: "none", whiteSpace: "nowrap" }}>
                 Ingresar
               </NavLink>
@@ -185,13 +197,33 @@ export const NavBar = () => {
           )
         )}
         <CartWidget />
+
+        {/* Hamburguesa: solo visible debajo de "md" (768px), reemplaza a la
+            franja de navegación de abajo y a los links de cuenta de arriba,
+            que en mobile se esconden (d-none d-md-flex). */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+          className="d-flex d-md-none align-items-center justify-content-center"
+          style={{
+            flexShrink: 0,
+            background: "transparent",
+            border: "none",
+            color: "var(--text)",
+            padding: "4px",
+          }}
+        >
+          {menuOpen ? <CloseIcon size={24} /> : <MenuIcon size={24} />}
+        </button>
       </div>
 
-      {/* Franja de navegación principal */}
+      {/* Franja de navegación principal - escondida en mobile, reemplazada
+          por el menú desplegable de la hamburguesa. */}
       <div
+        className="d-none d-md-flex"
         style={{
           backgroundColor: "var(--bg-black)",
-          display: "flex",
           alignItems: "center",
           gap: "28px",
           padding: "12px 24px",
@@ -238,6 +270,75 @@ export const NavBar = () => {
           Contacto y Envíos
         </NavLink>
       </div>
+
+      {/* Menú desplegable mobile: mismos links que la franja de navegación +
+          los de cuenta, todos juntos acá porque en mobile no hay lugar para
+          tenerlos separados como en desktop. */}
+      {menuOpen && (
+        <div
+          className="d-md-none"
+          style={{
+            backgroundColor: "var(--bg-black)",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            flexDirection: "column",
+            padding: "8px 24px 16px",
+          }}
+        >
+          <NavLink to="/" end onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+            Inicio
+          </NavLink>
+          <NavLink to="/productos" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+            Productos
+          </NavLink>
+          <NavLink to="/categorias" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+            Categorías
+          </NavLink>
+          <NavLink to="/marcas" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+            Marcas
+          </NavLink>
+          <NavLink to="/nosotros" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+            Contacto y Envíos
+          </NavLink>
+
+          <div style={{ borderTop: "1px solid var(--border)", margin: "8px 0" }} />
+
+          {!loadingAuth && (
+            user ? (
+              <>
+                <NavLink to="/mi-cuenta" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                  Mi cuenta
+                </NavLink>
+                <NavLink to="/mis-pedidos" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                  Mis pedidos
+                </NavLink>
+                {user.role === "admin" && (
+                  <>
+                    <NavLink to="/admin/pedidos" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                      Pedidos (admin)
+                    </NavLink>
+                    <NavLink to="/admin/arrepentimientos" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                      Arrepentimientos (admin)
+                    </NavLink>
+                  </>
+                )}
+                <span onClick={handleLogout} className="nav-link-custom" style={{ cursor: "pointer", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                  Cerrar sesión
+                </span>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                  Ingresar
+                </NavLink>
+                <NavLink to="/register" onClick={closeMenu} className="nav-link-custom" style={{ textDecoration: "none", fontSize: "15px", fontWeight: 500, padding: "10px 0" }}>
+                  Registrarse
+                </NavLink>
+              </>
+            )
+          )}
+        </div>
+      )}
     </>
   );
 };

@@ -343,6 +343,7 @@ export const Cart = () => {
       {savings > 0 && !pagaConDescuento && (
         <div style={{ fontSize: "11.5px", color: "var(--accent-2)", marginTop: "8px" }}>
           Pagando en efectivo o transferencia ahorrás ${Math.round(savings).toLocaleString("es-AR")}
+          {" "}— total ${Math.round(cashTotal + shippingCost).toLocaleString("es-AR")}
         </div>
       )}
     </div>

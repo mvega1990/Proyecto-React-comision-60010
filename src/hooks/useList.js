@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const mapProduct = (p) => ({ ...p, id: p._id, image: p.thumbnail, marca: p.brand });
 
 export const useList = (category, sort, brand, search, options = {}) => {
-  const { onSale, featured, newArrival, limit = 24, page = 1 } = options;
+  const { onSale, featured, newArrival, cyberMonday, limit = 24, page = 1 } = options;
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
@@ -25,6 +25,7 @@ export const useList = (category, sort, brand, search, options = {}) => {
     if (onSale) params.set("onSale", "true");
     if (featured) params.set("featured", "true");
     if (newArrival) params.set("newArrival", "true");
+    if (cyberMonday) params.set("cyberMonday", "true");
 
     fetch(`${API_URL}/api/products?${params.toString()}`)
       .then((res) => res.json())
@@ -42,7 +43,7 @@ export const useList = (category, sort, brand, search, options = {}) => {
         setHasPrevPage(false);
       })
       .finally(() => setLoading(false));
-  }, [category, sort, brand, search, onSale, featured, newArrival, limit, page]);
+  }, [category, sort, brand, search, onSale, featured, newArrival, cyberMonday, limit, page]);
 
   return { list, loading, totalPages, hasNextPage, hasPrevPage };
 };

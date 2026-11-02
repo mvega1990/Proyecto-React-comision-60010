@@ -18,12 +18,14 @@ import { Categorias } from "./components/Categorias";
 import { Home } from "./components/Home";
 import { Footer } from "./components/Footer";
 import { WhatsappFloatButton } from "./components/WhatsappFloatButton";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider>
       <Provider>
         <BrowserRouter>
+          <ScrollToTop />
           <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />

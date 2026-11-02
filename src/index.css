@@ -236,6 +236,32 @@ a.nav-link {
    foto, que ya viene con fondo blanco) y toda la tarjeta crece junta al pasar
    el mouse, no solo la imagen (mismo mecanismo que matiasherramientas.com.ar,
    con nuestros colores). */
+.category-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+/* En mobile, 260px de mínimo deja una sola tarjeta por fila (se ve
+   enorme) - achicamos el mínimo y el gap para que entren 2 por fila en
+   cualquier celular, achicando también la foto/etiqueta en proporción. */
+@media (max-width: 575.98px) {
+  .category-tiles-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+  .category-tile-img {
+    padding: 10px;
+  }
+  .category-tile-label {
+    bottom: 10px;
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+  .category-tile-more-plus {
+    font-size: 32px;
+  }
+}
+
 .category-tile {
   display: block;
   position: relative;

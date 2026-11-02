@@ -3,13 +3,7 @@ import { Link } from "react-router-dom";
 // Grilla de tarjetas de categoría reutilizada en el Home (recorte a las
 // primeras N + tarjeta "Ver todas") y en /categorias (listado completo).
 export const CategoryTiles = ({ items, moreLink }) => (
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-      gap: "22px",
-    }}
-  >
+  <div className="category-tiles-grid">
     {items.map(({ name, photo }) => (
       <Link key={name} to={`/categoria/${name}`} className="category-tile link-no-underline">
         {photo ? (

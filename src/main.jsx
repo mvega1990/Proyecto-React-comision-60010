@@ -18,10 +18,13 @@ if (import.meta.env.PROD) {
   gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
   document.head.appendChild(gaScript);
 
+  // window.gtag (no una const local) - así queda expuesta globalmente, como
+  // espera el propio script de Google y como haría falta para dispararla a
+  // mano desde la consola del navegador al diagnosticar algo.
   window.dataLayer = window.dataLayer || [];
-  const gtag = (...args) => window.dataLayer.push(args);
-  gtag('js', new Date());
-  gtag('config', GA_MEASUREMENT_ID);
+  window.gtag = (...args) => window.dataLayer.push(args);
+  window.gtag('js', new Date());
+  window.gtag('config', GA_MEASUREMENT_ID);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

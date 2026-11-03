@@ -12,7 +12,7 @@ initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY, { locale: 'es-AR' });
 // es un dato sensible (queda visible en el HTML de cualquier sitio con
 // Analytics), por eso va hardcodeado en vez de en una env var.
 if (import.meta.env.PROD) {
-  const GA_MEASUREMENT_ID = 'G-3F6TS3MPCV';
+  const GA_MEASUREMENT_ID = 'G-QWBB5K83NZ';
   const gaScript = document.createElement('script');
   gaScript.async = true;
   gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;

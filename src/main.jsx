@@ -25,6 +25,16 @@ if (import.meta.env.PROD) {
   window.gtag = (...args) => window.dataLayer.push(args);
   window.gtag('js', new Date());
   window.gtag('config', GA_MEASUREMENT_ID);
+
+  // TEST TEMPORAL (sacar apenas termine la prueba): propiedad creada con otra
+  // cuenta de Google, para aislar si el problema de que no llegan hits es de
+  // la cuenta del dueño en particular o de algo más general.
+  const GA_TEST_ID = 'G-FYYQLWDY6C';
+  const gaTestScript = document.createElement('script');
+  gaTestScript.async = true;
+  gaTestScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TEST_ID}`;
+  document.head.appendChild(gaTestScript);
+  window.gtag('config', GA_TEST_ID);
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(

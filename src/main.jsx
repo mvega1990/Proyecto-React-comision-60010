@@ -42,6 +42,16 @@ if (import.meta.env.PROD) {
   })(window, document, 'clarity', 'script', CLARITY_PROJECT_ID);
 }
 
+// Cloudflare Web Analytics - visitas/páginas vistas y de dónde viene la
+// gente, sin cookies. Gratis, independiente de Google y de Clarity.
+if (import.meta.env.PROD) {
+  const cfScript = document.createElement('script');
+  cfScript.type = 'module';
+  cfScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  cfScript.setAttribute('data-cf-beacon', '{"token": "a482e1ad63b14cb0b67adec9ae977720"}');
+  document.head.appendChild(cfScript);
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />

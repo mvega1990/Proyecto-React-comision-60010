@@ -27,6 +27,21 @@ if (import.meta.env.PROD) {
   window.gtag('config', GA_MEASUREMENT_ID);
 }
 
+// Microsoft Clarity - mapas de calor y grabaciones de sesión, gratis y sin
+// depender de ninguna cuenta de Google (independiente del lío de Analytics).
+// Snippet oficial de Clarity, solo en producción por el mismo motivo que GA.
+if (import.meta.env.PROD) {
+  const CLARITY_PROJECT_ID = 'zbknq4l72d';
+  (function (c, l, a, r, i) {
+    c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+    const t = l.createElement('script');
+    t.async = 1;
+    t.src = 'https://www.clarity.ms/tag/' + i;
+    const y = l.getElementsByTagName('script')[0];
+    y.parentNode.insertBefore(t, y);
+  })(window, document, 'clarity', 'script', CLARITY_PROJECT_ID);
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />

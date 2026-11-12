@@ -523,56 +523,7 @@ const BrandsStrip = () => {
   );
 };
 
-// Franja propia para Cyber Monday, separada de la barra de promos de arriba
-// (esa ya tiene 4 mensajes con un timing de animación armado a mano, meter
-// un 5to ahí complica el CSS y sacarlo después). Mismo degradé violeta→cyan
-// que ya usa el resto del sitio (category-tile-label, numerito) -- se probó
-// también una versión con paleta "Cyber Monday" genérica (negro + neón) pero
-// el dueño prefirió quedarse con la identidad normal del sitio.
-// TEMPORAL: sacar este bloque (o condicionarlo a cyberMonday del catálogo)
-// después del 12/11.
-const CyberMondayBanner = () => (
-  <div
-    style={{
-      background: "linear-gradient(90deg, var(--accent-3), var(--accent-2))",
-      padding: "18px 0",
-    }}
-  >
-    <Container
-      className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between"
-      style={{ gap: "6px" }}
-    >
-      <div>
-        <span style={{ fontSize: "20px", fontWeight: 800, color: "#0b0b10", letterSpacing: "0.5px" }}>
-          CYBER MONDAY
-        </span>
-        <span style={{ fontSize: "14px", fontWeight: 600, color: "#0b0b10", marginLeft: "10px" }}>
-          Precios especiales en Scanners Autel y Thinkcar
-        </span>
-      </div>
-      <a
-        href="#cyber-monday"
-        style={{
-          fontSize: "13px",
-          fontWeight: 700,
-          color: "#0b0b10",
-          background: "rgba(11, 11, 16, 0.12)",
-          padding: "6px 14px",
-          borderRadius: "100px",
-          textDecoration: "none",
-          whiteSpace: "nowrap",
-        }}
-      >
-        Hasta el 12/11 →
-      </a>
-    </Container>
-  </div>
-);
-
 export const Home = () => {
-  // TEMPORAL: sacar junto con el flag `cyberMonday` del catálogo y el
-  // banner de arriba cuando termine la promo (12/11).
-  const { list: cyberMondayList, loading: loadingCyberMonday } = useList(null, null, null, null, { cyberMonday: true, limit: 12 });
   const { list: scanners, loading: loadingScanners } = useList("Scanners", null, null, null, { limit: 12 });
   const { list: destacados, loading: loadingDestacados } = useList(null, null, null, null, { featured: true, limit: 12 });
   // Elegidas a mano por el dueño (campo newArrival), no automático por fecha de
@@ -584,10 +535,8 @@ export const Home = () => {
 
   return (
     <div>
-      <CyberMondayBanner />
       <HeroCarousel />
       <CategoryShowcase />
-      <ProductRow id="cyber-monday" title="Cyber Monday" list={cyberMondayList} loading={loadingCyberMonday} emptyOk />
       <ProductRow title="Scanners" list={scanners} loading={loadingScanners} emptyOk to="/categoria/Scanners" />
       <ProductRow title="Destacados" list={destacados} loading={loadingDestacados} emptyOk />
       {user && (

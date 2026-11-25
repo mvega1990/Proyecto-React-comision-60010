@@ -528,9 +528,11 @@ export const Home = () => {
   const { list: destacados, loading: loadingDestacados } = useList(null, null, null, null, { featured: true, limit: 12 });
   // Elegidas a mano por el dueño (campo newArrival), no automático por fecha de
   // carga - mientras se termina de migrar el catálogo viejo, "recién
-  // cargado" no es lo mismo que "es una novedad real". El sort=newest
-  // genérico sigue existiendo en /productos para quien quiera ordenar así.
-  const { list: novedades, loading: loadingNovedades } = useList(null, null, null, null, { newArrival: true, limit: 12 });
+  // cargado" no es lo mismo que "es una novedad real". Sí ordenamos por más
+  // reciente primero (sort="newest") - sin esto, con más de 12 productos
+  // marcados como novedad, los últimos agregados quedaban afuera del corte
+  // de 12 por el orden natural de Mongo, no por elección real.
+  const { list: novedades, loading: loadingNovedades } = useList(null, "newest", null, null, { newArrival: true, limit: 12 });
   const { list: ofertasSocios, loading: loadingOfertasSocios, user } = useMemberOffers();
 
   return (

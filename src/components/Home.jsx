@@ -523,7 +523,54 @@ const BrandsStrip = () => {
   );
 };
 
+// Franja genérica para la promo destacada que esté vigente (Black Friday,
+// Cyber Monday, etc.) - mismo degradé violeta→cyan de siempre (ver el
+// historial de Cyber Monday: se probó una paleta "de evento" aparte y el
+// dueño prefirió quedarse con la identidad normal del sitio).
+// TEMPORAL: sacar este bloque (o condicionarlo a promoDestacada del
+// catálogo) cuando termine la promo vigente.
+const PromoBanner = () => (
+  <div
+    style={{
+      background: "linear-gradient(90deg, var(--accent-3), var(--accent-2))",
+      padding: "18px 0",
+    }}
+  >
+    <Container
+      className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between"
+      style={{ gap: "6px" }}
+    >
+      <div>
+        <span style={{ fontSize: "20px", fontWeight: 800, color: "#0b0b10", letterSpacing: "0.5px" }}>
+          BLACK FRIDAY
+        </span>
+        <span style={{ fontSize: "14px", fontWeight: 600, color: "#0b0b10", marginLeft: "10px" }}>
+          Precios especiales en Scanners Autel y Thinkcar
+        </span>
+      </div>
+      <a
+        href="#promo-destacada"
+        style={{
+          fontSize: "13px",
+          fontWeight: 700,
+          color: "#0b0b10",
+          background: "rgba(11, 11, 16, 0.12)",
+          padding: "6px 14px",
+          borderRadius: "100px",
+          textDecoration: "none",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Hasta el 3/12 →
+      </a>
+    </Container>
+  </div>
+);
+
 export const Home = () => {
+  // TEMPORAL: sacar junto con el flag `promoDestacada` del catálogo y el
+  // banner de arriba cuando termine la promo vigente.
+  const { list: promoList, loading: loadingPromo } = useList(null, null, null, null, { promoDestacada: true, limit: 12 });
   const { list: scanners, loading: loadingScanners } = useList("Scanners", null, null, null, { limit: 12 });
   const { list: destacados, loading: loadingDestacados } = useList(null, null, null, null, { featured: true, limit: 12 });
   // Elegidas a mano por el dueño (campo newArrival), no automático por fecha de
@@ -537,8 +584,10 @@ export const Home = () => {
 
   return (
     <div>
+      <PromoBanner />
       <HeroCarousel />
       <CategoryShowcase />
+      <ProductRow id="promo-destacada" title="Black Friday" list={promoList} loading={loadingPromo} emptyOk />
       <ProductRow title="Scanners" list={scanners} loading={loadingScanners} emptyOk to="/categoria/Scanners" />
       <ProductRow title="Destacados" list={destacados} loading={loadingDestacados} emptyOk />
       {user && (
